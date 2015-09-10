@@ -1,0 +1,89 @@
+
+
+<?php $__env->startSection('title'); ?>
+Edit Supply Sayur <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<?php /* dd($supply) */ ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Edit Supply Sayur</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-danger alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<strong>Whoops!</strong> Ada masalah dengan data yang anda masukkan.<br><br>
+							<ul>
+								<?php foreach($errors->all() as $error): ?>
+									<li><?php echo e($error); ?></li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endif; ?>
+					<form name="add" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="nama" class="col-md-2 control-label">Nama Supplier:</label>
+							<div class="col-md-10">
+								<select name="supplier" class="form-control" autofocus>
+									<?php foreach($supplier as $spl): ?>
+										<option value="<?php echo e($spl->id); ?>"><?php echo e($spl->nama . '. Telp: ' . $spl->telp); ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="sayur" class="col-md-2 control-label">Sayur:</label>
+							<div class="col-md-12">
+								<div class="row">
+<?php $i = 1;$j = 0; ?>
+								<?php foreach($sayur as $sy): ?>
+									<label class="control-label col-md-4">
+										<input type="checkbox" name="sayur[]" value="<?php echo e($sy->id); ?>" id="check<?php echo e($i); ?>" onclick="$(this).prop('checked', true);alert('Anda tidak dapat menghilangkan cek ini!')" readonly checked> <?php echo e($sy->nama); ?>
+
+									</label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<p class="input-group-addon"><small>Rp</small></p>
+											<input type="text" name="harga[]" placeholder="Harga" class="form-control" id="text<?php echo e($i); ?>" value="<?php echo e($sy->harga_sayur); ?>">
+										</div>
+									</div>
+<?php $i++;$j++ ?>
+								<?php endforeach; ?>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-10 col-md-offset-2">
+								<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+								<input type="submit" name="kirim" value="Kirim" class="btn btn-primary">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+<script type="text/javascript">
+	function toggleTextOn(a, b) {
+	    var isCheck = a.is(':checked');
+
+	    a.prop('checked', isCheck);
+
+	    if (isCheck) {
+	        b.prop("disabled", false);
+	        return true;
+	    } else {
+	        b.prop("disabled", true).prop('checked', false);
+	        b.prop("value", "");
+	        return false;
+	    }
+	}
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

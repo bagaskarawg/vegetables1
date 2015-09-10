@@ -1,0 +1,74 @@
+
+
+<?php $__env->startSection('title'); ?>
+Daftar Sayur <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Daftar Sayur</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-success alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<?php foreach($errors->all() as $error): ?>
+								<strong>Berhasil!</strong> <?php echo e($error); ?>
+
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+                    <div id="toolbar" class="btn-group">
+                        <a href="<?php echo e(route('tambah-sayur')); ?>" class="btn btn-default" data-toggle="tooltip" data-original-title="Tambah Mobil" data-placement="top">
+                            Tambah Sayur
+                        </a>
+                    </div>
+					<table data-toggle="table" data-pagination="true" data-toolbar="#toolbar">
+						<thead>
+							<th data-align="center">No</th>
+							<th data-sortable="true" data-align="center">EAN</th>
+							<th data-sortable="true" data-align="center">MCH</th>
+							<th data-sortable="true" data-align="center">Article No</th>
+							<th data-sortable="true" data-align="center">Deskripsi</th>
+							<th data-sortable="true" data-align="center">Satuan</th>
+							<th data-sortable="true" data-formatter="hargaFormatter" data-align="center">Harga Per Satuan</th>
+							<?php if(Auth::user()->hak_akses == 'a'): ?>
+								<th data-align="center">Aksi</th>
+							<?php endif; ?>
+						</thead>
+						<tbody>
+<?php $i = 1; ?>
+							<?php foreach($sayur as $sy): ?>
+								<tr>
+									<td><?php echo e($i); ?></td>
+									<td><?php echo e(($sy->ean != '') ? $sy->ean : '-'); ?></td>
+									<td><?php echo e(($sy->mch != '') ? $sy->mch : '-'); ?></td>
+									<td><?php echo e($sy->id); ?></td>
+									<td><?php echo e(($sy->nama != '') ? $sy->nama : '-'); ?></td>
+									<td><?php echo e(($sy->satuan != '') ? $sy->satuan : '-'); ?></td>
+									<td><?php echo e(($sy->harga != '') ? $sy->harga : '-'); ?></td>
+									<?php if(Auth::user()->hak_akses == 'a'): ?>
+										<td><a href="<?php echo e(route('edit-sayur', $sy->id)); ?>">Edit</a> | <a href="<?php echo e(route('hapus-sayur', $sy->id)); ?>" onclick="if(!confirm('Anda yakin ingin menghapus data sayur tersebut?')) return false">Hapus</a></td>
+									<?php endif; ?>
+								</tr>
+<?php $i++; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/accounting.min.js')); ?>"></script>
+	<script type="text/javascript">
+		function hargaFormatter(value) {
+			return accounting.formatMoney(value, 'Rp ', '2', '.', ',');
+		}
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

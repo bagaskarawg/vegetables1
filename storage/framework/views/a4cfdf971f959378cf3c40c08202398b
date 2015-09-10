@@ -1,0 +1,59 @@
+
+
+<?php $__env->startSection('title'); ?>
+Daftar Foodhall <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Daftar Foodhall</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-success alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<?php foreach($errors->all() as $error): ?>
+								<strong>Berhasil!</strong> <?php echo e($error); ?>
+
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+                    <div id="toolbar" class="btn-group">
+                        <a href="<?php echo e(route('tambah-foodhall')); ?>" class="btn btn-default" data-toggle="tooltip" data-original-title="Tambah Mobil" data-placement="top">
+                            Tambah Foodhall
+                        </a>
+                    </div>
+					<table data-toggle="table" data-pagination="true" data-toolbar="#toolbar">
+						<thead>
+							<th data-align="center">No</th>
+							<th data-sortable="true" data-align="center">Nama Foodhall</th>
+							<th data-sortable="true" data-align="center">No Telepon</th>
+							<th data-sortable="true" data-align="center">Operator</th>
+							<?php if(Auth::user()->hak_akses == 'a'): ?>
+								<th data-align="center">Aksi</th>
+							<?php endif; ?>
+						</thead>
+						<tbody>
+<?php $i = 1; ?>
+							<?php foreach($foodhall as $fh): ?>
+								<tr>
+									<td><?php echo e($i); ?></td>
+									<td><?php echo e(($fh->nama != '') ? $fh->nama : '-'); ?></td>
+									<td><?php echo e(($fh->telp != '') ? $fh->telp : '-'); ?></td>
+									<td><?php echo e(($fh->operator != '') ? $fh->operator : '-'); ?></td>
+									<?php if(Auth::user()->hak_akses == 'a'): ?>
+										<td><a href="<?php echo e(route('edit-foodhall', $fh->id)); ?>">Edit</a> | <a href="<?php echo e(route('hapus-foodhall', $fh->id)); ?>" onclick="if(!confirm('Anda yakin ingin menghapus data foodhall tersebut?')) return false">Hapus</a></td>
+									<?php endif; ?>
+								</tr>
+<?php $i++; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

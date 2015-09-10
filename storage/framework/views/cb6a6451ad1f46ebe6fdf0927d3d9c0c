@@ -1,0 +1,66 @@
+<?php $__env->startSection('title'); ?>
+Tambah Tagihan <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Tambah Tagihan</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-danger alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<strong>Whoops!</strong> Ada masalah dengan data yang anda masukkan.<br><br>
+							<ul>
+								<?php foreach($errors->all() as $error): ?>
+									<li><?php echo e($error); ?></li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endif; ?>
+					<p>Pilih Transaksi:</p>
+					<table data-toggle="table">
+						<thead>
+							<th data-align="center">No</th>
+							<th data-align="center">No Transaksi</th>
+							<th data-align="center">Foodhall</th>
+							<th data-align="center">Pilih</th>
+						</thead>
+						<tbody>
+<?php $i = 1 ?>
+							<?php foreach($penjualan as $pj): ?>
+									<tr>
+										<td><?php echo e($i); ?></td>
+										<td><?php echo e($pj->main_id); ?></td>
+										<td><?php echo e($pj->nama); ?></td>
+										<td><a href="<?php echo e(route('tambah-tagihan', $pj->main_id)); ?>">Pilih transaksi</a></td>
+									</tr>
+<?php $i++ ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+<script type="text/javascript">
+	function toggleTextOn(a, b) {
+	    var isCheck = a.is(':checked');
+
+	    a.prop('checked', isCheck);
+
+	    if (isCheck) {
+	        b.prop("disabled", false);
+	    } else {
+	        b.prop("disabled", true).prop('checked', false);
+	        b.prop("value", "");
+	    }
+	}
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

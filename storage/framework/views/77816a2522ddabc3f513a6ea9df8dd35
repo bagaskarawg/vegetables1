@@ -1,0 +1,84 @@
+<?php $__env->startSection('title'); ?>
+Daftar Supply Sayur <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Daftar Supply Sayur</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-success alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<?php foreach($errors->all() as $error): ?>
+								<strong>Berhasil!</strong> <?php echo e($error); ?>
+
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+                    <div id="toolbar" class="btn-group">
+                        <a href="<?php echo e(route('tambah-supply-sayur')); ?>" class="btn btn-default" data-toggle="tooltip" data-original-title="Tambah Mobil" data-placement="top">
+                            Tambah Supply Sayur
+                        </a>
+                    </div>
+					<table data-toggle="table" data-pagination="true" data-toolbar="#toolbar">
+						<thead>
+							<th data-align="center" data-valign="middle">No</th>
+							<th data-sortable="true" data-align="center" data-valign="middle">Nama Supplier</th>
+							<th data-sortable="true" data-align="center" data-valign="middle">Nama Sayur</th>
+							<th data-sortable="true" data-align="center" data-valign="middle">Harga</th>
+							<?php if(Auth::user()->hak_akses == 'a'): ?>
+								<th data-align="center" data-valign="middle">Aksi</th>
+							<?php endif; ?>
+						</thead>
+						<tbody>
+<?php $i = 1; ?>
+							<?php foreach($supply as $sp): ?>
+								<tr>
+									<td><?php echo e($i); ?></td>
+									<td><?php echo e($sp->nama); ?></td>
+									<td>
+									<?php foreach($sayur as $s): ?>
+										<?php if($s->supplier_id == $sp->supplier_id): ?>
+											<p class="no-margin"><?php echo e($s->nama_sayur); ?></p>
+											<hr class="hr" />
+										<?php endif; ?>
+									<?php endforeach; ?>
+									</td>
+									<td>
+									<?php foreach($sayur as $s): ?>
+										<?php if($s->supplier_id == $sp->supplier_id): ?>
+											<p class="no-margin">Rp <?php echo e(number_format($s->harga_sayur, 2, ',', '.')); ?></p>
+											<hr class="hr" />
+										<?php endif; ?>
+									<?php endforeach; ?>
+									</td>
+									<?php if(Auth::user()->hak_akses == 'a'): ?>
+										<td><a href="<?php echo e(route('edit-supply-sayur', $sp->supplier_id)); ?>">Edit Harga</a> | <a href="<?php echo e(route('hapus-supply-sayur', $sp->supplier_id)); ?>" onclick="if(!confirm('Anda yakin ingin menghapus data supply sayur tersebut?')) return false">Hapus</a></td>
+									<?php endif; ?>
+								</tr>
+<?php $i++; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/accounting.min.js')); ?>"></script>
+	<script type="text/javascript">
+		document.ready(function() {
+			$("#harga").val() = accounting.formatMoney($("#harga").val(), 'Rp ', '2', '.', ',');
+		});
+
+		function hargaFormatter(value) {
+			return accounting.formatMoney(value, 'Rp ', '2', '.', ',');
+		}
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

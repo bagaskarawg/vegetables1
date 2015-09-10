@@ -1,0 +1,76 @@
+<?php $__env->startSection('title'); ?>
+Detail Penjualan <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading hidden-print">Detail Penjualan <p class="pull-right"><a href="#" onclick="window.print()" class="btn-sm btn-success">Print</a></p></div>
+				<div class="panel-body">
+					<div class="visible-print" style="text-align:center">
+						<h4><?php echo e(config('site.name')); ?></h4>
+						<p class="no-margin">Address: <?php echo e(config('site.address')); ?></p>
+						<p class="no-margin">Telp/Fax: <?php echo e(config('site.telephone')); ?>.</p>
+						<p class="no-margin">Phone: <?php echo e(config('site.mobile')); ?> - <?php echo e(config('site.mobile2')); ?></p>
+						<p>Email: <?php echo e(config('site.email')); ?>.</p>
+						<h4 class="no-margin">Penjualan</h4>
+						<hr />
+					</div>
+					<div class="col-md-6">
+						<p>No Faktur: <b><i><?php echo e($penjualan->main_id); ?></i></b></p>
+						<p>Foodhall: <b><i><?php echo e($penjualan->nama); ?></i></b></p>
+					</div>
+					<div class="col-md-6">
+						<p>User: <b><i><?php echo e($penjualan->nama_lengkap); ?></i></b></p>
+						<p>Tanggal Kirim: <b><i><?php echo e(date('j M Y', strtotime($penjualan->tgl_kirim))); ?></i></b></p>
+					</div>
+					<hr class="hr" />
+					<div class="col-md-12">
+						<table data-toggle="table" class="table">
+							<thead>
+								<th data-align="center">No</th>
+								<th data-align="center">Article</th>
+								<th data-align="center">Deskripsi</th>
+								<th data-align="center">Kuantitas</th>
+								<th data-align="center" data-formatter="hargaFormatter">Harga Satuan</th>
+								<th data-align="center" data-formatter="hargaFormatter">Total</th>
+							</thead>
+							<tbody>
+<?php $i = 1;$total = 0;$total_qty = 0; ?>
+								<?php foreach($detail as $det): ?>
+									<tr>
+										<td><?php echo e($i); ?></td>
+										<td><?php echo e($det->sayur_id); ?></td>
+										<td><?php echo e($det->nama); ?></td>
+										<td><?php echo e(number_format(str_replace(',', '.', $det->kuantitas), 0, ',', '.') . ' ' . $det->satuan); ?></td>
+										<td><?php echo e($det->harga); ?></td>
+										<td><?php echo e(str_replace(',', '.', $det->kuantitas) * $det->harga); ?></td>
+									</tr>
+<?php $i++;$total += str_replace(',', '.', $det->kuantitas) * $det->harga;$total_qty += str_replace(',', '.', $det->kuantitas) ?>
+								<?php endforeach; ?>
+							</tbody>
+							<tfoot>
+								<td colspan="3"><center>Total Kuantitas:</center></td>
+								<th><center><u><?php echo e($total_qty); ?></u></center></th>
+								<td><center>Total Faktur:</center></td>
+								<th><center><u>Rp <?php echo e(number_format($total, 2, ',', '.')); ?></u></center></th>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/accounting.min.js')); ?>"></script>
+	<script type="text/javascript">
+		function hargaFormatter(value) {
+			return accounting.formatMoney(value, 'Rp ', '2', '.', ',');
+		}
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

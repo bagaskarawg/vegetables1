@@ -1,0 +1,59 @@
+<?php $__env->startSection('title'); ?>
+Edit Jadwal <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Edit Jadwal</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-danger alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<strong>Whoops!</strong> Ada masalah dengan data yang anda masukkan.<br><br>
+							<ul>
+								<?php foreach($errors->all() as $error): ?>
+									<li><?php echo e($error); ?></li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endif; ?>
+					<form method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="hari" class="col-md-2 control-label">Hari:</label>
+							<div class="col-md-10">
+								<select name="hari" class="form-control">
+									<?php foreach($hari as $h): ?>
+										<option value="<?php echo e($h->id); ?>"><?php echo e($h->hari); ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="foodhall" class="col-md-2 control-label">Foodhall:</label>
+							<div class="col-md-10">
+<?php $i = 0 ?>
+								<?php foreach($foodhall as $fh): ?>
+									<label class="control-label col-md-6">
+										<input type="checkbox" name="foodhall[]" value="<?php echo e($fh->id); ?>"<?php for ($i=0; $i < count($jadwal); $i++) { echo ($fh->id == $jadwal[$i]->foodhall_id) ? ' checked' : ''; } ?>> <?php echo e($fh->nama); ?>
+
+									</label>
+<?php $i++ ?>
+								<?php endforeach; ?>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-10 col-md-offset-2">
+								<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+								<input type="submit" name="kirim" value="Kirim" class="btn btn-primary">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

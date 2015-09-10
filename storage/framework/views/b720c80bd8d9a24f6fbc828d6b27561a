@@ -1,0 +1,63 @@
+<?php $__env->startSection('title'); ?>
+Jadwal Pengiriman <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">Jadwal Pengiriman</div>
+				<div class="panel-body">
+					<?php if(count($errors) > 0): ?>
+						<div class="alert alert-success alert-dismissable">
+							<button data-dismiss="alert" class="close">&times;</button>
+							<?php foreach($errors->all() as $error): ?>
+								<strong>Berhasil!</strong> <?php echo e($error); ?>
+
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+					<table data-toggle="table" data-pagination="true" data-toolbar="#toolbar">
+						<thead>
+							<th data-sortable="true" data-align="center" data-valign="middle">No</th>
+							<th data-sortable="true" data-align="center" data-valign="middle">Hari</th>
+							<th data-sortable="true" data-align="center" data-valign="middle">Foodhall</th>
+							<?php if(Auth::user()->hak_akses == 'a'): ?>
+								<th data-align="center" data-valign="middle">Aksi</th>
+							<?php endif; ?>
+						</thead>
+						<tbody>
+<?php $i = 1 ?>
+							<?php foreach($jadwal as $j): ?>
+								<tr>
+									<td><?php echo e($i); ?></td>
+									<td><?php echo e($j->hari); ?></td>
+									<td>
+										<?php foreach($foodhall as $fh): ?>
+											<?php if($fh->jadwal_id == $j->id): ?>
+												<p class="no-margin"><?php echo e($fh->nama); ?></p>
+											<?php endif; ?>
+										<?php endforeach; ?>
+									</td>
+									<td><a href="<?php echo e(route('edit-jadwal', $j->id)); ?>">Edit Jadwal</a></td>
+								</tr>
+<?php $i++ ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/accounting.min.js')); ?>"></script>
+	<script type="text/javascript">
+		function hargaFormatter(value) {
+			return accounting.formatMoney(value, 'Rp ', '2', '.', ',');
+		}
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

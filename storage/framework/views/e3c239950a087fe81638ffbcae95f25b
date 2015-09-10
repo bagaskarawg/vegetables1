@@ -1,0 +1,73 @@
+<?php $__env->startSection('title'); ?>
+Laporan Penjualan Mingguan <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading hidden-print">Laporan Penjualan Mingguan <p class="pull-right"><a href="#" onclick="window.close()" class="btn-sm btn-danger">Tutup halaman</a> <a href="#" onclick="window.print()" class="btn-sm btn-success">Print</a></p></div>
+				<div class="panel-body">
+					<div class="visible-print" style="text-align:center">
+						<h4><?php echo e(config('site.name')); ?></h4>
+						<p class="no-margin">Address: <?php echo e(config('site.address')); ?></p>
+						<p class="no-margin">Telp/Fax: <?php echo e(config('site.telephone')); ?>.</p>
+						<p class="no-margin">Phone: <?php echo e(config('site.mobile')); ?> - <?php echo e(config('site.mobile2')); ?></p>
+						<p>Email: <?php echo e(config('site.email')); ?>.</p>
+					</div>
+					<table data-toggle="table">
+						<thead>
+							<th data-align="center">No</th>
+							<th data-align="center">Article</th>
+							<th data-align="center">Deskripsi</th>
+							<th data-align="center">Supplier</th>
+							<th data-align="center">Tanggal Kirim</th>
+							<th data-align="center">Kuantitas</th>
+							<th data-align="center" data-formatter="hargaFormatter">Harga Supplier</th>
+							<th data-align="center" data-formatter="hargaFormatter">Harga Satuan</th>
+							<th data-align="center" data-formatter="hargaFormatter">Total Transaksi</th>
+							<th data-align="center" data-formatter="hargaFormatter">Total Laba</th>
+						</thead>
+						<tbody>
+<?php $i = 1;$tp = 0;$lb = 0; ?>
+						<?php foreach($penjualan as $pj): ?>
+<?php $harga = $pj->harga_dp * str_replace(',', '.', $pj->qty) ?>
+<?php $laba = ($pj->harga_dp - $pj->harga_supplier) * str_replace(',', '.', $pj->qty) ?>
+							<tr>
+								<td><?php echo e($i); ?></td>
+								<td><?php echo e($pj->article_id); ?></td>
+								<td><?php echo e($pj->nama_sayur); ?></td>
+								<td><?php echo e($pj->nama_supplier); ?></td>
+								<td><?php echo e(date('j M Y', strtotime($pj->tgl_kirim))); ?></td>
+								<td><?php echo e(number_format($pj->qty, 0, ',', '.') . ' ' . $pj->satuan); ?></td>
+								<td><?php echo e($pj->harga_supplier); ?></td>
+								<td><?php echo e($pj->harga); ?></td>
+								<td><?php echo e($harga); ?></td>
+								<td><?php echo e($laba); ?></td>
+							</tr>
+<?php $i++;$tp += $harga;$lb += $laba; ?>
+						<?php endforeach; ?>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="8"><center>Total pendapatan/laba minggu ini:</center></td>
+								<th colspan="2"><center><u>Rp <?php echo e(number_format($tp, 2, ',', '.')); ?></u> / <u>Rp <?php echo e(number_format($lb, 2, ',', '.')); ?></u></center></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/accounting.min.js')); ?>"></script>
+	<script type="text/javascript">
+		function hargaFormatter(value) {
+			return accounting.formatMoney(value, 'Rp ', '2', '.', ',');
+		}
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

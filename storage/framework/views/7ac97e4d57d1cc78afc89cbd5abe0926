@@ -1,0 +1,187 @@
+<?php $__env->startSection('title'); ?>
+Beranda <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<?php if(count($errors) > 0): ?>
+			<div class="col-md-12">
+				<div class="alert alert-success alert-dismissable">
+					<button data-dismiss="alert" class="close">&times;</button>
+					<?php foreach($errors->all() as $error): ?>
+						<strong>Berhasil!</strong> <?php echo e($error); ?>
+
+					<?php endforeach; ?>
+				</div>
+			</div>
+		<?php endif; ?>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading"><center>Jadwal Pengiriman Hari <?php echo e($hari[0]->hari); ?></center></div>
+				<div class="panel-body">
+					<div class="row">
+						<?php if(count($jadwal) > 0): ?>
+							<ol>
+								<?php foreach($jadwal as $j): ?>
+									<li class="col-md-6 no-margin"><?php echo e($j->nama . ': ' . $j->telp); ?></li>
+								<?php endforeach; ?>
+							</ol>
+						<?php else: ?>
+							<p class="col-md-12 no-margin">Tidak ada jadwal pengiriman pada hari ini.</p>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading"><center>Pembayaran Tagihan Hari Ini</center></div>
+				<div class="panel-body">
+					<div class="row">
+						<?php if(count($tagihan) > 0): ?>
+							<ol>
+								<?php foreach($tagihan as $t): ?>
+<?php if($t->telp == '')
+		$telp = '-';
+	else
+		$telp = $t->telp; ?>
+									<li class="col-md-12 no-margin"><?php echo e($t->nama . '. Telp: ' . $telp . '. Sayur: ' . $t->nama_sayur . '. Qty: ' . number_format(str_replace(',', '.', $t->kuantitas), 0, ',', '.') . ' ' . $t->satuan . '. Tagihan: Rp ' . number_format(str_replace(',', '.', $t->kuantitas) * $t->harga_supplier, 2, ',', '.')); ?></li>
+								<?php endforeach; ?>
+							</ol>
+						<?php else: ?>
+							<p class="col-md-12 no-margin">Tidak ada pembayaran tagihan pada hari ini.</p>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+					<hr />
+					<div id="containers" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom-js'); ?>
+	<script src="<?php echo e(asset('js/highcharts.js')); ?>"></script>
+	<script src="<?php echo e(asset('js/exporting.js')); ?>"></script>
+	<script type="text/javascript">
+		$(function () {
+		    $('#container').highcharts({
+		        chart: {
+		            type: 'bar'
+		        },
+		        title: {
+		            text: 'Grafik Penjualan Sayur Bulan Ini'
+		        },
+		        xAxis: {
+		            categories: [<?php foreach ($sayur as $s) { echo "'" . $s->nama . "', "; } ?>],
+		            title: {
+		                text: 'Sayur'
+		            }
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Kuantitas (kilogram)',
+		                align: 'middle'
+		            },
+		            labels: {
+		                overflow: 'justify'
+		            }
+		        },
+		        tooltip: {
+		            valueSuffix: ' kg'
+		        },
+		        plotOptions: {
+		            bar: {
+		                dataLabels: {
+		                    enabled: true
+		                }
+		            }
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'top',
+		            x: -40,
+		            y: 100,
+		            floating: true,
+		            borderWidth: 1,
+		            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+		            shadow: true
+		        },
+		        credits: {
+		            enabled: false
+		        },
+		        series: [{
+		            name: 'Kuantitas',
+		            data: [<?php foreach ($sayur as $s) { echo $s->qty . ", "; } ?>]
+		        }]
+		    });
+		});
+	</script>
+	<script type="text/javascript">
+		$(function () {
+		    $('#containers').highcharts({
+		        chart: {
+		            type: 'bar'
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+		            categories: [<?php foreach ($sayur as $s) { echo "'" . $s->nama . "', "; } ?>],
+		            title: {
+		                text: 'Sayur'
+		            }
+		        },
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: 'Rupiah',
+		                align: 'middle'
+		            },
+		            labels: {
+		                overflow: 'justify'
+		            }
+		        },
+		        tooltip: {
+		            valuePrefix: 'Rp '
+		        },
+		        plotOptions: {
+		            bar: {
+		                dataLabels: {
+		                    enabled: true
+		                }
+		            }
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'top',
+		            x: -40,
+		            y: 100,
+		            floating: true,
+		            borderWidth: 1,
+		            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+		            shadow: true
+		        },
+		        credits: {
+		            enabled: false
+		        },
+		        series: [{
+		        	name: 'Total Pendapatan',
+		        	data: [<?php foreach ($sayur as $s) { echo $s->harga * str_replace(',', '.', $s->qty) . ", "; } ?>]
+		        }]
+		    });
+		});
+	</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
